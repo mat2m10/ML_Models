@@ -22,3 +22,14 @@ SAVED_MODELS_DIR = os.path.join(TEST_DIR,'exported_models')
 TB_DIR = os.path.join(TEST_DIR,'exported_models')
 NUMPY_ARRAYS = os.path.join(ROOT_DIR,'numpy_arrays')
 FINAL_RESULTS_DIR = os.path.join(ROOT_DIR,'experiments','MONTAEZ_final')
+
+pvalue_threshold = 1e-2 #1.1 #1e-4
+
+###
+ttbr = 6 #?
+syn_n_subjects = 300 #?
+inform_snps = 20 #?
+noise_snps = 10000
+n_total_snps = inform_snps + noise_snps
+top_k = 30 #?
+real_top_k = 100 #?
