@@ -11,3 +11,12 @@ from parameters_complete import (
     
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
     FINAL_RESULTS_DIR, REAL_DATA_DIR)
+
+class TestDataGeneration(object):
+    """
+    Generates all synthetic and real data and labels
+    """
+    def test_synthetic_genotypes_generation(self, rep):
+        data_path = generate_syn_genotypes(root_path=SYN_DATA_DIR, n_subjects=syn_n_subjects,
+                                          n_info_snps=inform_snps, n_noise_snps=noise_snps,
+                                           quantity=rep)
