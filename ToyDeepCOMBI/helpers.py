@@ -23,10 +23,12 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
         """
         print("Starting synthetic genotypes generation..")
         try:
-            print(root_path)
             os.remove(os.path.join(root_path, "genomic.h5py"))
         except FileNotFoundError:
             pass
+        print(REAL_DATA_DIR)
+        with h5py.File(os.path.join(REAL_DATA_DIR,'AZ','chromo_2.mat'),'r') as f2:
+            chrom2_full = np.array(f2.get('X')).T
 
 def generate_syn_phenotypes():
     return "hello"
