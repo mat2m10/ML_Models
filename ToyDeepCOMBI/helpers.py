@@ -22,6 +22,11 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
         dataset.
         """
         print("Starting synthetic genotypes generation..")
+        try:
+            print(root_path)
+            os.remove(os.path.join(root_path, "genomic.h5py"))
+        except FileNotFoundError:
+            pass
 
 def generate_syn_phenotypes():
     return "hello"
