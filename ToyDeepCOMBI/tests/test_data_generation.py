@@ -20,3 +20,9 @@ class TestDataGeneration(object):
         data_path = generate_syn_genotypes(root_path=SYN_DATA_DIR, n_subjects=syn_n_subjects,
                                           n_info_snps=inform_snps, n_noise_snps=noise_snps,
                                            quantity=rep)
+        print(data_path)
+        with h5py.File(data_path, 'r') as file:
+            print("Verifying the generated phenotypes...")
+            genotype = file[0][:]
+            n_indiv, n_snps, _ = genotype.shape
+            assert n_indiv == syn_n_subjects
