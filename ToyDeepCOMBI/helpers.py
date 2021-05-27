@@ -13,6 +13,18 @@ from parameters_complete import (
     FINAL_RESULTS_DIR, REAL_DATA_DIR
 )
 
+# First Method
+
+def remove_small_frequencies(chrom):
+    """
+    This returns a chromosom with only minor allel freq > 0.15
+    This chromosom can be safely used to generate synthetic genotypes/
+    This returned Value can contain unmapped SNP's!
+    """
+    chrom[chrom == 48] = 255 # I dont understand what is happening here
+    n_indiv = chrom.shape[0]
+    print(n_indiv)
+
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
         """ Generate synthetic genotypes and labels by removing all minor allels with low frequency,
@@ -26,9 +38,9 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
             os.remove(os.path.join(root_path, "genomic.h5py"))
         except FileNotFoundError:
             pass
-        print(REAL_DATA_DIR)
         with h5py.File(os.path.join(REAL_DATA_DIR,'AZ','chromo_2.mat'),'r') as f2:
             chrom2_full = np.array(f2.get('X')).T
-
+            chrom2_full = chrom2_full.reshape(chrom2_full.shape[0],-1,3)[:,:,:2]
+            chrom2_full = remove_small_frequencies(chrom2_full)
 def generate_syn_phenotypes():
     return "hello"
