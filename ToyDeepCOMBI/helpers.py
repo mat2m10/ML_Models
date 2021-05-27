@@ -41,7 +41,8 @@ def remove_small_frequencies(chrom):
     chrom_low_f_removed.sort()
     check_genotype_unique_allels(chrom_low_f_removed) # Second Method
     return chrom_low_f_removed
-    
+
+# First Method
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
         """ Generate synthetic genotypes and labels by removing all minor allels with low frequency,

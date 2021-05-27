@@ -6,7 +6,7 @@ from scipy.stats import chi2
 from tensorflow.python.client import device_lib
 from tqdm import tqdm
 import random
-from helpers import generate_syn_genotypes, generate_syn_phenotypes, check_genotype_unique_allels
+from helpers import generate_syn_genotypes, generate_syn_phenotypes, check_genotype_unique_allels, genomic_to_featmat
 from parameters_complete import (
     
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
