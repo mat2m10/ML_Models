@@ -13,15 +13,21 @@ from parameters_complete import (
     FINAL_RESULTS_DIR, REAL_DATA_DIR
 )
 
+# Second Method
+def check_genotype_unique_allels(genotype):
+    """
+    Check if we dont have unique allels (maybe)
+    """
+    assert(max([len(np.unique(genotype[:, i, :]))
+                for i in range(genotype.shape[1])]) <= 3)
 # First Method
-
 def remove_small_frequencies(chrom):
     """
     This returns a chromosom with only minor allel freq > 0.15
     This chromosom can be safely used to generate synthetic genotypes/
     This returned Value can contain unmapped SNP's!
     """
-    chrom[chrom == 48] = 255 # I dont understand what is happening here
+    chrom[chrom == 48] = 255 # I think passing from int(48) to int(255)
     n_indiv = chrom.shape[0]
     lex_min = np.tile(np.min(chrom, axis=(0, 2)), [n_indiv, 1]) # Make a matrix of MAF?
     allel1 = chrom[:, :, 0]
@@ -31,7 +37,9 @@ def remove_small_frequencies(chrom):
     maf = (lexmin_mask_1.sum(0) + lexmin_mask_2.sum(0))/(2*n_indiv) # Array of [n_indiv X maf]?
     maf = np.minimum(maf, 1-maf) # Array of [n_indiv X maf]? all < 0.5
     chrom[chrom == 255] = 48
-    print(chrom)
+    chrom_low_f_removed = chrom[:, maf > 0.15, :] # Remove elements with their minor allele < 0.15 
+    chrom_low_f_removed.sort()
+    check_genotype_unique_allels(chrom_low_f_removed)
     
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
