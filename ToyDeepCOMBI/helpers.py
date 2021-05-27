@@ -23,8 +23,16 @@ def remove_small_frequencies(chrom):
     """
     chrom[chrom == 48] = 255 # I dont understand what is happening here
     n_indiv = chrom.shape[0]
-    print(np.min(chromosome, axis=(0, 2)))
-
+    lex_min = np.tile(np.min(chrom, axis=(0, 2)), [n_indiv, 1]) # Make a matrix of MAF?
+    allel1 = chrom[:, :, 0]
+    allel2 = chrom[:, :, 1]
+    lexmin_mask_1 = (allel1 == lex_min) # True and False matrix
+    lexmin_mask_2 = (allel2 == lex_min)
+    maf = (lexmin_mask_1.sum(0) + lexmin_mask_2.sum(0))/(2*n_indiv) # Array of [n_indiv X maf]?
+    maf = np.minimum(maf, 1-maf) # Array of [n_indiv X maf]? all < 0.5
+    chrom[chrom == 255] = 48
+    print(chrom)
+    
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
         """ Generate synthetic genotypes and labels by removing all minor allels with low frequency,
