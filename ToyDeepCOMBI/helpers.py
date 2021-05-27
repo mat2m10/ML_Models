@@ -23,7 +23,7 @@ def remove_small_frequencies(chrom):
     """
     chrom[chrom == 48] = 255 # I dont understand what is happening here
     n_indiv = chrom.shape[0]
-    print(n_indiv)
+    print(np.min(chromosome, axis=(0, 2)))
 
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
