@@ -22,6 +22,7 @@ class TestDataGeneration(object):
                                            quantity=rep)
         print(data_path)
         with h5py.File(data_path, 'r') as file:
+            print(file)
             print("Verifying the generated phenotypes...")
             genotype = file[0][:]
             n_indiv, n_snps, _ = genotype.shape
