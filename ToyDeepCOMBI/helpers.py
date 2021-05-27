@@ -74,8 +74,6 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
         half_noise_size = int(n_noise_snps/2)
         with h5py.File(os.path.join(root_path, 'genomic.h5py'), 'w') as file:
             for i in tqdm(range(quantity)):
-                print(range(quantity))
-                print(np.arange(len(chrom1[0,:])-n_info_snps))
                 # random starting position
                 start_info = random.choice(np.arange(len(chrom1[0,:])-n_info_snps))
                 #chrom1_subset = chrom1[:, i*n_info_snps:(i+1)*n_info_snps]
@@ -83,8 +81,6 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
                 data = np.concatenate((chrom2[:, :half_noise_size], chrom1_subset, chrom2[:,
                                                                                           half_noise_size:half_noise_size*2]), axis=1)
                 ## If the number of encoded SNPs is insufficient
-                print(data.shape[1])
-                print(n_info_snps + n_noise_snps)
                 if data.shape[1] != n_info_snps + n_noise_snps:
                     raise Exception("Not enough SNPs")
                 # Write everything!
