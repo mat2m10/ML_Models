@@ -69,7 +69,8 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
             assert chrom1_full.shape[0] > n_subjects 
             chrom1 = chrom1_full[:n_subjects]  # Keep only 300 people
         """
-        
+        Create #rep different datasets, each with a different set of informative SNPs - no they only
+        need to be random, not all different. otherwise we couldnt have 10000 datasets.
         """
         half_noise_size = int(n_noise_snps/2)
         with h5py.File(os.path.join(root_path, 'genomic.h5py'), 'w') as file:

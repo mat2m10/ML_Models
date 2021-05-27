@@ -6,7 +6,7 @@ from scipy.stats import chi2
 from tensorflow.python.client import device_lib
 from tqdm import tqdm
 import random
-from helpers import generate_syn_genotypes, generate_syn_phenotypes
+from helpers import generate_syn_genotypes, generate_syn_phenotypes, check_genotype_unique_allels
 from parameters_complete import (
     
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
@@ -25,3 +25,14 @@ class TestDataGeneration(object):
             genotype = file['0'][:]
             n_indiv, n_snps, _ = genotype.shape
             assert n_indiv == syn_n_subjects
+            assert n_snps == inform_snps + noise_snps
+            # Check that at most 3 unique allels exists
+            check_genotype_unique_allels(genotype)
+            
+    def test_feature_map_generation(self):
+        """
+        From synthetic data in h5py format generate a corresponding feature matrix
+        a written featmat at data/synthetic/2d_syn_fm.h5py
+        and a written featmat at data/synthetic/3d_syn_fm.h5py
+        """
+        m2 = genomic_to_featmat(embedding_type='2d', overwrite=True)
