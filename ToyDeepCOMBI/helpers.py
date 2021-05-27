@@ -39,7 +39,8 @@ def remove_small_frequencies(chrom):
     chrom[chrom == 255] = 48
     chrom_low_f_removed = chrom[:, maf > 0.15, :] # Remove elements with their minor allele < 0.15 
     chrom_low_f_removed.sort()
-    check_genotype_unique_allels(chrom_low_f_removed)
+    check_genotype_unique_allels(chrom_low_f_removed) # Second Method
+    return chrom_low_f_removed
     
 def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, n_info_snps=20,
                            n_noise_snps=10000, quantity=1):
@@ -57,6 +58,38 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
         with h5py.File(os.path.join(REAL_DATA_DIR,'AZ','chromo_2.mat'),'r') as f2:
             chrom2_full = np.array(f2.get('X')).T
             chrom2_full = chrom2_full.reshape(chrom2_full.shape[0],-1,3)[:,:,:2]
-            chrom2_full = remove_small_frequencies(chrom2_full)
+            chrom2_full = remove_small_frequencies(chrom2_full) # First Method
+            chrom2_full = chrom2_full[:, :n_noise_snps]
+            assert chrom2_full.shape[0] > n_subjects # We want to keep only n synthetisch people
+            chrom2 = chrom2_full[:n_subjects]
+        with h5py.File(os.path.join(REAL_DATA_DIR,'AZ', 'chromo_1.mat'), 'r') as f:
+            chrom1_full = np.array(f.get('X')).T
+            chrom1_full = chrom1_full.reshape(chrom1_full.shape[0], -1, 3)[:, :, :2]
+            chrom1_full = remove_small_frequencies(chrom1_full)
+            assert chrom1_full.shape[0] > n_subjects 
+            chrom1 = chrom1_full[:n_subjects]  # Keep only 300 people
+        """
+        
+        """
+        half_noise_size = int(n_noise_snps/2)
+        with h5py.File(os.path.join(root_path, 'genomic.h5py'), 'w') as file:
+            for i in tqdm(range(quantity)):
+                print(range(quantity))
+                print(np.arange(len(chrom1[0,:])-n_info_snps))
+                # random starting position
+                start_info = random.choice(np.arange(len(chrom1[0,:])-n_info_snps))
+                #chrom1_subset = chrom1[:, i*n_info_snps:(i+1)*n_info_snps]
+                chrom1_subset = chrom1[:, start_info:(start_info+n_info_snps)]
+                data = np.concatenate((chrom2[:, :half_noise_size], chrom1_subset, chrom2[:,
+                                                                                          half_noise_size:half_noise_size*2]), axis=1)
+                ## If the number of encoded SNPs is insufficient
+                print(data.shape[1])
+                print(n_info_snps + n_noise_snps)
+                if data.shape[1] != n_info_snps + n_noise_snps:
+                    raise Exception("Not enough SNPs")
+                # Write everything!
+                file.create_dataset(str(i), data=data)
+        return os.path.join(root_path, 'genomic.h5py')
+    
 def generate_syn_phenotypes():
     return "hello"

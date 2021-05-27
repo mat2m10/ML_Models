@@ -25,10 +25,10 @@ FINAL_RESULTS_DIR = os.path.join(ROOT_DIR,'experiments','MONTAEZ_final')
 pvalue_threshold = 1e-2 #1.1 #1e-4
 
 ###
-ttbr = 6 #?
-syn_n_subjects = 300 #?
-inform_snps = 20 #?
-noise_snps = 10000
+ttbr = 6 #Tower to base ratio
+syn_n_subjects = 2 # number of subjects for synthetisch data
+inform_snps = 5 #?
+noise_snps = 0
 n_total_snps = inform_snps + noise_snps
 top_k = 30 #?
 real_top_k = 100 #?
