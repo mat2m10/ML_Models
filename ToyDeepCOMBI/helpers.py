@@ -12,15 +12,17 @@ from parameters_complete import (
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
     FINAL_RESULTS_DIR, REAL_DATA_DIR
 )
-
-# Second Method
+# Fourth Method
+def genomic_to_featmat(embedding_type="2d", overwrite=False):
+    
+# Third Method
 def check_genotype_unique_allels(genotype):
     """
     Check if we dont have unique allels (maybe)
     """
     assert(max([len(np.unique(genotype[:, i, :]))
                 for i in range(genotype.shape[1])]) <= 3)
-# First Method
+# Second Method
 def remove_small_frequencies(chrom):
     """
     This returns a chromosom with only minor allel freq > 0.15
