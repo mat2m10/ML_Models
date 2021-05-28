@@ -14,7 +14,7 @@ from parameters_complete import (
 )
 # Fourth Method
 def genomic_to_featmat(embedding_type="2d", overwrite=False):
-    
+    pass
 # Third Method
 def check_genotype_unique_allels(genotype):
     """
