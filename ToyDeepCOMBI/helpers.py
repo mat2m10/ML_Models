@@ -10,11 +10,105 @@ import random
 from parameters_complete import (
     
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
-    FINAL_RESULTS_DIR, REAL_DATA_DIR
+    FINAL_RESULTS_DIR, REAL_DATA_DIR, pnorm_feature_scaling
 )
+
+# Fifth Method
+def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm_feature_scaling):
+    """
+    transforms AA AT TT
+    into 1 0 0; 0 1 0; 0 0 1
+    """
+    ###  Global Parameters   ###
+    (n_subjects, num_snp3, _) = data.shape
+
+    # Computes lexicographically highest and lowest nucleotides for each position of each strand
+    lexmax_overall_per_snp = np.max(data, axis=(0, 2))
+    #data_now = data.copy()
+
+    data[data == 48] = 255
+
+    lexmin_overall_per_snp = np.min(data, axis=(0, 2))
+    data[data == 255] = 48
+
+    # Masks showing valid or invalid indices
+    # SNPs being unchanged amongst the whole dataset, hold no information
+
+    lexmin_mask_per_snp = np.tile(lexmin_overall_per_snp, [n_subjects, 1])
+    lexmax_mask_per_snp = np.tile(lexmax_overall_per_snp, [n_subjects, 1])
+
+    invalid_bool_mask = (lexmin_mask_per_snp == lexmax_mask_per_snp)
+
+    allele1 = data[:, :, 0]
+    allele2 = data[:, :, 1]
+
+    # indices where allel1 equals the lowest value
+    allele1_lexminor_mask = (allele1 == lexmin_mask_per_snp)
+    # indices where allel1 equals the highest value
+    allele1_lexmajor_mask = (allele1 == lexmax_mask_per_snp)
+    # indices where allel2 equals the lowest value
+    allele2_lexminor_mask = (allele2 == lexmin_mask_per_snp)
+    # indices where allel2 equals the highest value
+    allele2_lexmajor_mask = (allele2 == lexmax_mask_per_snp)
+
+    f_m = np.zeros((n_subjects, num_snp3), dtype=(int, 3))
+
+    f_m[allele1_lexminor_mask & allele2_lexminor_mask] = [1, 0, 0]
+    f_m[(allele1_lexmajor_mask & allele2_lexminor_mask) |
+        (allele1_lexminor_mask & allele2_lexmajor_mask)] = [0, 1, 0]
+    f_m[allele1_lexmajor_mask & allele2_lexmajor_mask] = [0, 0, 1]
+    f_m[invalid_bool_mask] = [0, 0, 0]
+    f_m = np.reshape(f_m, (n_subjects, 3*num_snp3))
+    f_m = f_m.astype(np.double)
+
+    # Rescale feature matrix
+    f_m -= np.mean(f_m, dtype=np.float64, axis=0) # centering
+    stddev = ((np.abs(f_m)**norm_feature_scaling).mean(axis=0) * f_m.shape[1])**(1.0/norm_feature_scaling)
+    
+    # Safe division
+    f_m = np.divide(f_m, stddev, out=np.zeros_like(f_m), where=stddev!=0)
+
+    # Reshape Feature matrix
+    if embedding_type == '2d':
+        pass
+    elif embedding_type == '3d':
+        f_m = np.reshape(f_m, (n_subjects, num_snp3, 3))
+
+    return f_m.astype(float)
+
 # Fourth Method
 def genomic_to_featmat(embedding_type="2d", overwrite=False):
-    pass
+    """
+    Transforms a h5py dictionary of genomic matrix of chars to a tensor of features {'0': genomic_mat_0, ... 'rep': genomic_mat_rep}
+    3d [n_subjects, 3*n_snps] 2d [n_subj[n_snps[0 0 1]]]
+    """
+    
+    data_path = os.path.join(SYN_DATA_DIR, 'genomic.h5py')
+    fm_path = os.path.join(SYN_DATA_DIR, embedding_type + '_fm.h5py')
+    if overwrite:
+        try:
+            os.remove(fm_path)
+        except (FileNotFoundError, OSError):
+            pass
+
+    if not overwrite:
+        try:
+            return h5py.File(fm_path, 'r')
+        except (FileNotFoundError, OSError):
+            print('Featmat not found: generating new one...')
+    
+    with h5py.File(fm_path, 'w') as feature_file:
+        with h5py.File(data_path, 'r') as data_file:
+            for key in tqdm(list(data_file.keys())):
+                data = data_file[key][:]
+                
+                f_m = char_matrix_to_featmat(data, embedding_type)
+
+                feature_file.create_dataset(key, data=f_m)
+                del data
+
+    return h5py.File(fm_path, 'r')
+
 # Third Method
 def check_genotype_unique_allels(genotype):
     """

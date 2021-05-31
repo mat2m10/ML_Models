@@ -32,3 +32,7 @@ noise_snps = 0
 n_total_snps = inform_snps + noise_snps
 top_k = 30 #?
 real_top_k = 100 #?
+
+# USED in char_matrix_to_featmat to scale the resulting feature matrix
+pnorm_feature_scaling = 2 
+real_pnorm_feature_scaling = 6
