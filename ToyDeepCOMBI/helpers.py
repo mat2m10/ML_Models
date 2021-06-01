@@ -154,7 +154,9 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
             pass
         with h5py.File(os.path.join(REAL_DATA_DIR,'AZ','chromo_2.mat'),'r') as f2:
             chrom2_full = np.array(f2.get('X')).T
-            print(f2.get('X'))
+            temp = f2.get('X')
+            temp2 = f2[temp[0]]
+            print(temp2)
             chrom2_full = chrom2_full.reshape(chrom2_full.shape[0],-1,3)[:,:,:2]
             chrom2_full = remove_small_frequencies(chrom2_full) # First Method
             chrom2_full = chrom2_full[:, :n_noise_snps]
