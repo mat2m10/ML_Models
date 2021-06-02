@@ -156,6 +156,7 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
             chrom2_full = np.array(f2.get('X')).T
             print(chrom2_full)
             chrom2_full = chrom2_full.reshape(chrom2_full.shape[0],-1,3)[:,:,:2]
+            
             chrom2_full = remove_small_frequencies(chrom2_full) # First Method
             chrom2_full = chrom2_full[:, :n_noise_snps]
             assert chrom2_full.shape[0] > n_subjects # We want to keep only n synthetisch people
