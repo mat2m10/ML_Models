@@ -10,8 +10,12 @@ from parameters_complete import SYN_DATA_DIR, ttbr as default_ttbr, syn_n_subjec
 features_path = os.path.join(SYN_DATA_DIR, 'genomic.h5py')
 
 def pytest_addoption(parser):
-    parser.addoption("--rep", action="store", default=2)
-    
+    parser.addoption("--rep", 
+                     action="store", 
+                     default=2)
+    parser.addoption("--ttbr", 
+                     action="store", 
+                     default=default_ttbr)
 @pytest.fixture
 def rep(request):
     return int(request.config.getoption("--rep"))
@@ -79,7 +83,7 @@ def syn_labels(rep, ttbr):
 @pytest.fixture(scope='function')
 def ttbr(request):
     """
-    Returns the rower to base ratio
+    Returns the tower to base ratio
 
     """
     return int(request.config.getoption("--ttbr"))
