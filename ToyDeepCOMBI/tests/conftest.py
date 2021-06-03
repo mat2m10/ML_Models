@@ -9,6 +9,8 @@ import tensorflow as tf
 from parameters_complete import SYN_DATA_DIR, ttbr as default_ttbr, syn_n_subjects, n_total_snps, noise_snps, inform_snps, FINAL_RESULTS_DIR, REAL_DATA_DIR
 features_path = os.path.join(SYN_DATA_DIR, 'genomic.h5py')
 
+from helpers import genomic_to_featmat, generate_syn_phenotypes
+
 def pytest_addoption(parser):
     parser.addoption("--rep", 
                      action="store", 
@@ -51,7 +53,17 @@ def syn_idx(syn_labels_0based):
     }
     Ex: indices['0'].train gets the indices for dataset 0, train set.
     """
-    pass
+    assert VAL_PERCENTAGE <=0.00001
+    indices_ = {}
+    splitter =  StratifiedShuffleSplit(n_splits=1, test_size = TEST_PERCENTAGE, random_state=random_state)
+    for key, labels in syn_labels_0based.items():
+
+        train_indices, test_indices = next(splitter.split(np.zeros(syn_n_subjects), labels))
+        indices_[key] = Indices(train_indices, test_indices, None)
+    
+    print('Dataset sizes: Train: {}; Test: {}; Validation: ERROR'.format(len(train_indices),len(test_indices)))
+    return indices_
+
     
 @pytest.fixture(scope='function')
 def syn_labels_0based(syn_labels):
