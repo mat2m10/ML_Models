@@ -154,15 +154,11 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
             pass
         with h5py.File(os.path.join(REAL_DATA_DIR,'AZ','chromo_2.mat'),'r') as f2:
             chrom2_full = np.array(f2.get('X')).T
-            print(chrom2_full)
             chrom2_full = chrom2_full.reshape(chrom2_full.shape[0],-1,3)[:,:,:2]
-            print(chrom2_full)
             chrom2_full = remove_small_frequencies(chrom2_full) # First Method
             chrom2_full = chrom2_full[:, :n_noise_snps]
-            print(chrom2_full)
             assert chrom2_full.shape[0] > n_subjects # We want to keep only n synthetisch people
             chrom2 = chrom2_full[:n_subjects]
-            print(chrom2)
         with h5py.File(os.path.join(REAL_DATA_DIR,'AZ', 'chromo_1.mat'), 'r') as f:
             chrom1_full = np.array(f.get('X')).T
             chrom1_full = chrom1_full.reshape(chrom1_full.shape[0], -1, 3)[:, :, :2]

@@ -26,7 +26,7 @@ pvalue_threshold = 1e-2 #1.1 #1e-4
 
 ###
 ttbr = 6 #Tower to base ratio
-syn_n_subjects = 5 # number of subjects for synthetisch data
+syn_n_subjects = 4 # number of subjects for synthetisch data
 inform_snps = 40 #?
 noise_snps = 20
 n_total_snps = inform_snps + noise_snps

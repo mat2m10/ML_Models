@@ -23,6 +23,7 @@ class TestDataGeneration(object):
         with h5py.File(data_path, 'r') as file:
             print("Verifying the generated phenotypes...")
             genotype = file['0'][:]
+            print(genotype)
             n_indiv, n_snps, _ = genotype.shape
             assert n_indiv == syn_n_subjects
             assert n_snps == inform_snps + noise_snps
