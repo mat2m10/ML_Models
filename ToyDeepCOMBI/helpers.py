@@ -16,7 +16,7 @@ from parameters_complete import (
 # Fifth Method
 def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm_feature_scaling):
     """
-    transforms AA AT TT
+    transforms AA AT TT,  NOOO == [1 1] [1 20] [20 20]
     into 1 0 0; 0 1 0; 0 0 1
     """
     ###  Global Parameters   ###
@@ -49,7 +49,6 @@ def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm
     allele2_lexmajor_mask = (allele2 == lexmax_mask_per_snp)
 
     f_m = np.zeros((n_subjects, num_snp3), dtype=(int, 3))
-
     f_m[allele1_lexminor_mask & allele2_lexminor_mask] = [1, 0, 0]
     f_m[(allele1_lexmajor_mask & allele2_lexminor_mask) |
         (allele1_lexminor_mask & allele2_lexmajor_mask)] = [0, 1, 0]
@@ -58,18 +57,16 @@ def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm
     f_m = np.reshape(f_m, (n_subjects, 3*num_snp3))
     f_m = f_m.astype(np.double)
     # Rescale feature matrix
-    f_m -= np.mean(f_m, dtype=np.float64, axis=0) # centering
+    f_m -= np.mean(f_m, dtype=np.float64, axis=0) # centering    
     stddev = ((np.abs(f_m)**norm_feature_scaling).mean(axis=0) * f_m.shape[1])**(1.0/norm_feature_scaling)
     
     # Safe division
     f_m = np.divide(f_m, stddev, out=np.zeros_like(f_m), where=stddev!=0)
-
     # Reshape Feature matrix
     if embedding_type == '2d':
         pass
     elif embedding_type == '3d':
         f_m = np.reshape(f_m, (n_subjects, num_snp3, 3))
-    print(f_m)
     return f_m.astype(float)
 
 # Fourth Method
