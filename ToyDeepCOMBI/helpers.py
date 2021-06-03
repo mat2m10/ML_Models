@@ -27,10 +27,7 @@ def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm
     #data_now = data.copy()
 
     data[data == 48] = 255
-
     lexmin_overall_per_snp = np.min(data, axis=(0, 2))
-    data[data == 255] = 48
-
     # Masks showing valid or invalid indices
     # SNPs being unchanged amongst the whole dataset, hold no information
 
@@ -60,7 +57,6 @@ def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm
     f_m[invalid_bool_mask] = [0, 0, 0]
     f_m = np.reshape(f_m, (n_subjects, 3*num_snp3))
     f_m = f_m.astype(np.double)
-
     # Rescale feature matrix
     f_m -= np.mean(f_m, dtype=np.float64, axis=0) # centering
     stddev = ((np.abs(f_m)**norm_feature_scaling).mean(axis=0) * f_m.shape[1])**(1.0/norm_feature_scaling)
@@ -73,7 +69,7 @@ def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm
         pass
     elif embedding_type == '3d':
         f_m = np.reshape(f_m, (n_subjects, num_snp3, 3))
-
+    print(f_m)
     return f_m.astype(float)
 
 # Fourth Method
@@ -101,9 +97,7 @@ def genomic_to_featmat(embedding_type="2d", overwrite=False):
         with h5py.File(data_path, 'r') as data_file:
             for key in tqdm(list(data_file.keys())):
                 data = data_file[key][:]
-                
                 f_m = char_matrix_to_featmat(data, embedding_type)
-
                 feature_file.create_dataset(key, data=f_m)
                 del data
 
