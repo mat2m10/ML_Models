@@ -20,7 +20,30 @@ def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_
     returns: dict(key, labels)
     """
     print("Starting synthetic phenotypes generation...")
-# Fifth Method
+    info_snp_idx = int(n_noise_snps/2) + int(n_info_snps/2)
+    labels_dict = {}
+    def f(genotype, key):
+        n_indiv = genotype.shape[0]
+        print(info_snp_idx)
+        info_snp = np.max(info_snp)
+        major_mask_1 = (info_snp[:, 0] == major_allel)  # n
+        major_mask_2 = (info_snp[:, 1] == major_allel)  # n
+        invalid_mask = (info_snp[:, 0] == 48) | (info_snp[:, 1] == 48)
+        nb_major_allels = np.sum(
+            [major_mask_1, major_mask_2, invalid_mask], axis=0) - 1.0  # n
+        probabilities = 1 / \
+            (1 + np.exp(-tower_to_base_ratio * (nb_major_allels - np.median(nb_major_allels))))
+        random_vector = np.random.RandomState(seed).uniform(low=0.0, high=1.0, size=n_indiv)
+        labels = np.where(probabilities > random_vector, 1, -1)
+        assert genotype.shape[0] == labels.shape[0]
+        labels_dict[key] = labels   
+        del genotype
+    with h5py.File(os.path.join(root_path, 'genomic.h5py'), 'r') as h5py_file:
+        
+        Parallel(n_jobs=-1, require='sharedmem')(delayed(f)(h5py_file[str(i)][:],str(i)) for i in tqdm(range(quantity)))
+    return labels_dict
+
+    # Fifth Method
 def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm_feature_scaling):
     """
     transforms AA AT TT,  NOOO == [1 1] [1 20] [20 20]
