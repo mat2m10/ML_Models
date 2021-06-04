@@ -12,7 +12,14 @@ from parameters_complete import (
     SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
     FINAL_RESULTS_DIR, REAL_DATA_DIR, pnorm_feature_scaling
 )
-
+# Sixth Method
+def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_info_snps=2, n_noise_snps=10, quantity=1):
+    """
+    > Assumes that each SNP has at most 3 unique values in the whole dataset (Two allels and possibly unmapped values)
+    IMPORTANT: DOES NOT LOAD FROM FILE
+    returns: dict(key, labels)
+    """
+    print("Starting synthetic phenotypes generation...")
 # Fifth Method
 def char_matrix_to_featmat(data, embedding_type='2d', norm_feature_scaling=pnorm_feature_scaling):
     """
@@ -175,6 +182,3 @@ def generate_syn_genotypes(root_path = SYN_DATA_DIR, n_subjects=syn_n_subjects, 
                 # Write everything!
                 file.create_dataset(str(i), data=data)
         return os.path.join(root_path, 'genomic.h5py')
-    
-def generate_syn_phenotypes():
-    return "hello"
