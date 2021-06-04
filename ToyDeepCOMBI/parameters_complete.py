@@ -37,4 +37,5 @@ real_top_k = 100 #?
 pnorm_feature_scaling = 2 
 real_pnorm_feature_scaling = 6
 
-seed = 6666 # Satan helps us
+seed = 6 # Satan helps us
+random_state = np.random.RandomState(seed)

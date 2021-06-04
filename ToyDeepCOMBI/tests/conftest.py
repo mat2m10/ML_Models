@@ -5,14 +5,26 @@ import numpy as np
 import pytest
 import scipy
 import tensorflow as tf
+from sklearn.model_selection import StratifiedShuffleSplit
 
-from parameters_complete import SYN_DATA_DIR, ttbr as default_ttbr, syn_n_subjects, n_total_snps, noise_snps, inform_snps, FINAL_RESULTS_DIR, REAL_DATA_DIR
+from parameters_complete import (
+    SYN_DATA_DIR, ttbr as default_ttbr, 
+    syn_n_subjects, 
+    n_total_snps, 
+    noise_snps, 
+    inform_snps, 
+    FINAL_RESULTS_DIR, 
+    REAL_DATA_DIR,
+    random_state
+)
 features_path = os.path.join(SYN_DATA_DIR, 'genomic.h5py')
 
 from helpers import genomic_to_featmat, generate_syn_phenotypes
-TRAIN_PERCENTAGE = 0.80
-TEST_PERCENTAGE = 0.20
+TRAIN_PERCENTAGE = 0.5
+TEST_PERCENTAGE = 0.5
 VAL_PERCENTAGE = 1 - TRAIN_PERCENTAGE - TEST_PERCENTAGE
+
+from Indices import Indices
 
 def pytest_addoption(parser):
     parser.addoption("--rep", 
