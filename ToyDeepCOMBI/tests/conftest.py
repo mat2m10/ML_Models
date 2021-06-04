@@ -65,7 +65,7 @@ def syn_fm(syn_genomic_data):
     to the synthetic dataset
     """
     def fm_(dimensions):
-        return genomic_to_featmat(embedding_type = dimension)
+        return genomic_to_featmat(embedding_type = dimensions)
     return fm_
 @pytest.fixture(scope="function")
 def syn_idx(syn_labels_0based):
