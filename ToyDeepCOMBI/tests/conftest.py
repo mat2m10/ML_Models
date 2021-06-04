@@ -10,6 +10,9 @@ from parameters_complete import SYN_DATA_DIR, ttbr as default_ttbr, syn_n_subjec
 features_path = os.path.join(SYN_DATA_DIR, 'genomic.h5py')
 
 from helpers import genomic_to_featmat, generate_syn_phenotypes
+TRAIN_PERCENTAGE = 0.80
+TEST_PERCENTAGE = 0.20
+VAL_PERCENTAGE = 1 - TRAIN_PERCENTAGE - TEST_PERCENTAGE
 
 def pytest_addoption(parser):
     parser.addoption("--rep", 

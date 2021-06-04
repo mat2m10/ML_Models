@@ -9,8 +9,17 @@ import random
 
 from parameters_complete import (
     
-    SYN_DATA_DIR, noise_snps, inform_snps, n_total_snps, syn_n_subjects, ttbr as ttbr, disease_IDs,
-    FINAL_RESULTS_DIR, REAL_DATA_DIR, pnorm_feature_scaling
+    SYN_DATA_DIR, 
+    noise_snps, 
+    inform_snps, 
+    n_total_snps, 
+    syn_n_subjects, 
+    ttbr as ttbr, 
+    disease_IDs,
+    seed,
+    FINAL_RESULTS_DIR, 
+    REAL_DATA_DIR, 
+    pnorm_feature_scaling
 )
 # Sixth Method
 def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_info_snps=2, n_noise_snps=10, quantity=1):
@@ -25,7 +34,8 @@ def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_
     def f(genotype, key):
         n_indiv = genotype.shape[0]
         print(info_snp_idx)
-        info_snp = np.max(info_snp)
+        info_snp = genotype[:,  info_snp_idx]  # (n,2)
+        major_allel = np.max(info_snp)
         major_mask_1 = (info_snp[:, 0] == major_allel)  # n
         major_mask_2 = (info_snp[:, 1] == major_allel)  # n
         invalid_mask = (info_snp[:, 0] == 48) | (info_snp[:, 1] == 48)
