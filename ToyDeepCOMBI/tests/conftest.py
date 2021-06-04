@@ -33,6 +33,16 @@ def pytest_addoption(parser):
     parser.addoption("--ttbr", 
                      action="store", 
                      default=default_ttbr)
+    
+@pytest.fixture(scope='function')
+def syn_true_pvalues(rep):
+    """
+    An array of zeroes except for where the loci are informative, in case 1.
+    """
+    pvalues = np.zeros((rep, n_total_snps), dtype=bool)
+    pvalues[:, int(noise_snps/2):int(noise_snps/2)+inform_snps] = True
+    return pvalues
+
 @pytest.fixture
 def rep(request):
     return int(request.config.getoption("--rep"))

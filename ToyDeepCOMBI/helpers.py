@@ -51,6 +51,7 @@ def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_
     with h5py.File(os.path.join(root_path, 'genomic.h5py'), 'r') as h5py_file:
         
         Parallel(n_jobs=-1, require='sharedmem')(delayed(f)(h5py_file[str(i)][:],str(i)) for i in tqdm(range(quantity)))
+    print(labels_dict)
     return labels_dict
 
     # Fifth Method

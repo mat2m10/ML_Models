@@ -4,4 +4,5 @@ class TestDeepCOMBI(object):
                      syn_true_pvalues):
         """ Compares efficiency of the combi method with several TTBR
         """
+        print("hello")
         pass
