@@ -21,6 +21,11 @@ from parameters_complete import (
     REAL_DATA_DIR, 
     pnorm_feature_scaling
 )
+# Seventh Method
+def get_available_gpus():
+    local_device_protos = device_lib.list_local_devices()
+    return len([x.name for x in local_device_protos if x.device_type == 'GPU'])
+
 # Sixth Method
 def generate_syn_phenotypes(root_path=SYN_DATA_DIR, tower_to_base_ratio=ttbr, n_info_snps=2, n_noise_snps=10, quantity=1):
     """
