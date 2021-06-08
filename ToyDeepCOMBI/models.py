@@ -5,7 +5,7 @@ from keras.regularizers import l1_l2
 from helpers import get_available_gpus
 from tensorflow.keras import optimizers
 best_params_montaez = {
-    'epochs': 500,
+    'epochs': 5,
 #    'batch_size': 32,   
     'l1_reg': 1e-4,
     'l2_reg': 1e-6,

@@ -1,7 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import tensorflow
 import numpy as np
 from helpers import generate_syn_phenotypes
 from models import best_params_montaez
@@ -9,6 +8,7 @@ from models import create_montaez_dense_model
 from sklearn.utils import class_weight
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 #from keras.callbacks import ReduceLROnPlateau
+
 import innvestigate
 import innvestigate.utils as iutils
 
@@ -41,8 +41,23 @@ class TestDeepCOMBI(object):
             y_integers = np.argmax(l_0b[idx.train], axis=1)
             class_weights = class_weight.compute_class_weight('balanced', np.unique(y_integers), y_integers)
             d_class_weights = dict(enumerate(class_weights))
-            model.fit(x=x_3d[idx.train], y=l_0b[idx.train], validation_data=(x_3d[idx.test], l_0b[idx.test]), epochs=best_params_montaez['epochs'], class_weight=d_class_weights, callbacks=[ ReduceLROnPlateau(monitor='val_loss', factor=best_params_montaez['factor'], patience=best_params_montaez['patience'], mode='min'),],)
-
+            print(l_0b[idx.train])
+            model.fit(x=x_3d[idx.train], y=l_0b[idx.train], 
+                      validation_data=(x_3d[idx.test], 
+                                       l_0b[idx.test]), 
+                      epochs=best_params_montaez['epochs'], 
+                      class_weight=d_class_weights, 
+                      callbacks=[ ReduceLROnPlateau(monitor='val_loss',
+                                                    factor=best_params_montaez['factor'],
+                                                    patience=best_params_montaez['patience'],
+                                                    mode='min'),],)
             #model = iutils.keras.graph.model_wo_softmax(model)
-            analyzer = innvestigate.analyzer.LRPAlpha1Beta0(model)
-            weights = analyzer.analyze(x_3d).sum(0)
+            #analyzer = innvestigate.analyzer.LRPAlpha1Beta0(model)
+            #weights = analyzer.analyze(x_3d).sum(0)
+            #top_indices_sorted, filtered_weights  = postprocess_weights(weights, 
+            #                                                            top_k, 
+            #                                                            filter_window_size, 
+            #                                                            p_svm, 
+            #                                                            p_pnorm_filter)
+            complete_pvalues = chi_square(syn_genomic_data[str(rep_to_plot)][:],
+                                          labels[str(rep_to_plot)])
